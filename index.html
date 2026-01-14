@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turma do TIK TOK - Resort Itaipava</title>
+    <title>Turma do TIK TOK - Itaipava Macabra</title>
     <style>
-        :root { --accent: #c9a050; --bg: #121418; --card: #1c1f26; --text: #d1d1d1; }
-        body { font-family: 'Garamond', serif; background: var(--bg); color: var(--text); margin: 0; display: flex; justify-content: center; line-height: 1.6; }
-        #app { max-width: 600px; width: 100%; min-height: 100vh; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; background: rgba(0,0,0,0.3); box-shadow: 0 0 50px rgba(0,0,0,0.5); }
-        .header { border-bottom: 1px solid var(--accent); text-align: center; padding-bottom: 20px; margin-bottom: 20px; }
-        .header h1 { font-size: 1.8rem; letter-spacing: 4px; color: var(--accent); margin: 0; }
-        .location-tag { font-size: 0.8rem; text-transform: uppercase; color: var(--accent); letter-spacing: 2px; margin-bottom: 5px; display: block; }
-        .scene-box { background: var(--card); border-left: 3px solid var(--accent); padding: 20px; border-radius: 4px; margin-bottom: 25px; min-height: 180px; font-size: 1.1rem; }
-        .choice-list { display: grid; gap: 12px; }
-        .btn { background: transparent; border: 1px solid #3d4450; color: var(--text); padding: 15px; text-align: left; cursor: pointer; transition: 0.4s; font-size: 0.9rem; border-radius: 2px; }
-        .btn:hover { border-color: var(--accent); background: #252a33; color: #fff; }
-        .btn-accuse { margin-top: 30px; border-color: #721c24; color: #f8d7da; background: #2c0b0e; font-weight: bold; text-align: center; }
-        .btn-accuse:hover { background: #4e1419; }
-        .footer { margin-top: auto; padding-top: 20px; border-top: 1px solid #333; font-size: 0.8rem; color: #666; display: flex; justify-content: space-between; }
+        :root { --gold: #d4af37; --bg: #0a0b0d; --card: #15171c; --text: #e0e0e0; --danger: #ff4b2b; }
+        body { font-family: 'Garamond', serif; background: var(--bg); color: var(--text); margin: 0; display: flex; justify-content: center; }
+        #app { max-width: 650px; width: 100%; min-height: 100vh; padding: 30px; box-sizing: border-box; background: radial-gradient(circle at top, #1a1d23 0%, #0a0b0d 100%); border-left: 1px solid #222; border-right: 1px solid #222; }
+        .header { text-align: center; border-bottom: 1px solid var(--gold); padding-bottom: 20px; margin-bottom: 30px; }
+        .header h1 { font-size: 2.2rem; letter-spacing: 5px; color: var(--gold); margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,1); }
+        .mission-card { background: var(--card); border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: 0.3s; }
+        .mission-card:hover { border-color: var(--gold); background: #1e2229; }
+        .mission-card h4 { margin: 0; color: var(--gold); }
+        .scene-box { background: rgba(0,0,0,0.5); border: 1px solid #333; padding: 25px; border-radius: 12px; margin-bottom: 25px; line-height: 1.7; font-size: 1.1rem; border-left: 5px solid var(--gold); }
+        .btn-list { display: grid; gap: 12px; }
+        .btn { background: #1c2128; border: 1px solid #444; color: var(--text); padding: 16px; text-align: left; cursor: pointer; border-radius: 4px; font-size: 1rem; font-family: inherit; }
+        .btn:hover { background: #252a33; border-color: var(--gold); color: white; }
+        .btn-accuse { margin-top: 30px; border: 2px solid var(--danger); color: var(--danger); background: rgba(255, 75, 43, 0.1); font-weight: bold; text-align: center; }
+        .inventory { font-size: 0.8rem; color: var(--gold); background: #000; padding: 8px; border-radius: 4px; margin-bottom: 15px; letter-spacing: 1px; }
         .hidden { display: none; }
-        b { color: var(--accent); }
+        b { color: var(--gold); }
     </style>
 </head>
 <body>
@@ -27,179 +28,218 @@
 <div id="app">
     <div class="header">
         <h1>TURMA DO TIK TOK</h1>
-        <small>REUNI√O EM ITAIPAVA - RJ</small>
+        <small>MIST√âRIO NO RESORT ITAIPAVA</small>
     </div>
 
-    <div id="screen-start">
-        <div class="scene-box">
-            A noite caiu sobre as montanhas de Itaipava. O que era para ser um encontro relaxante no resort tornou-se um pesadelo. 
-            As taÁas de vinho ainda est„o sobre a mesa, mas <b>alguÈm desapareceu</b> e uma fofoca cruel comeÁou a circular. 
-            VocÍ precisa ser r·pido antes que a neblina cubra todos os segredos.
-        </div>
-        <p style="text-align: center;">Escolha quem vocÍ ser· nesta noite:</p>
-        <div id="char-grid" class="choice-list"></div>
+    <div id="screen-missions">
+        <h3 style="text-align:center">Selecione um Arquivo de Caso:</h3>
+        <div id="mission-list"></div>
+    </div>
+
+    <div id="screen-chars" class="hidden">
+        <h3 id="selected-mission-title" style="text-align:center; color: var(--gold);"></h3>
+        <p style="text-align:center">Quem ir√° liderar esta investiga√ß√£o?</p>
+        <div id="char-grid" class="btn-list"></div>
     </div>
 
     <div id="screen-game" class="hidden">
-        <span class="location-tag" id="loc-display">Explorando...</span>
+        <div id="inv-display" class="inventory">INVENT√ÅRIO: Vazio</div>
         <div class="scene-box" id="scene-desc"></div>
-        <div id="choices-container" class="choice-list"></div>
-        <button class="btn btn-accuse" onclick="showAccuse()">[ ACUSAR O RESPONS¡VEL ]</button>
-        <div class="footer">
-            <span id="p-name"></span>
-            <span id="clue-tag">Pistas: 0</span>
-        </div>
+        <div id="choices" class="btn-list"></div>
+        <button class="btn btn-accuse" onclick="showAccuse()">[ ! ] FORMULAR ACUSA√á√ÉO FINAL</button>
     </div>
 
     <div id="screen-accuse" class="hidden">
-        <h2 style="color: var(--accent); text-align: center;">O VEREDITO</h2>
-        <p style="text-align: center;">Quem espalhou a fofoca e causou o sumiÁo?</p>
-        <div id="accuse-list" class="choice-list"></div>
-        <button class="btn" style="margin-top:20px; width: 100%; text-align: center;" onclick="backToGame()">Voltar</button>
+        <h2 style="color: var(--danger); text-align:center">O VEREDITO FINAL</h2>
+        <div id="accuse-grid" class="btn-list"></div>
+        <button class="btn" style="margin-top:20px; width:100%; text-align:center" onclick="backToGame()">Retornar √† Investiga√ß√£o</button>
     </div>
 </div>
 
 <script>
     const amigos = ["Thamiris", "Eduardo", "Marcos", "Elyel", "Julia", "Thais", "Alice", "Andre", "Bruna", "Thiago"];
     
-    let db = {
-        eu: "",
-        sumiu: "",
-        fofoqueiro: "",
-        pistas: 0
+    const missoes = [
+        { id: 1, t: "O Brinde Envenenado", d: "Uma ta√ßa de vinho car√≠ssima desapareceu, e logo depois, um dos amigos sumiu da mesa de jantar." },
+        { id: 2, t: "O Eco do Penhasco", d: "Gritos foram ouvidos perto do mirante. No local, apenas um cachecol e uma fofoca sobre trai√ß√£o." },
+        { id: 3, t: "Cofre de Segredos", d: "O cofre central do resort foi aberto. Algu√©m roubou os di√°rios e espalhou os prints na recep√ß√£o." },
+        { id: 4, t: "N√©voa na Piscina", d: "A √°rea t√©rmica foi evacuada ap√≥s algu√©m sumir no vapor. Restou apenas um par de sapatos e um boato de heran√ßa." },
+        { id: 5, t: "A √öltima Trilha", d: "Um passeio noturno pela mata terminou com um desaparecido e marcas de luta perto dos pinheiros." },
+        { id: 6, t: "Vingan√ßa na Adega", d: "O som de vidros quebrados atraiu todos √† adega, mas a porta foi trancada por fora com algu√©m l√° dentro." },
+        { id: 7, t: "Sombras no Banquete", d: "As luzes apagaram durante o prato principal. Quando voltaram, a cadeira da ponta estava vazia." },
+        { id: 8, t: "O C√≥digo do Elevador", d: "Algu√©m hackeou o sistema do resort e isolou um dos nossos amigos no andar de manuten√ß√£o." },
+        { id: 9, t: "A Mensagem de Sangue", d: "Uma mensagem no espelho do banheiro indicava que o fofoqueiro agiria √† meia-noite." },
+        { id: 10, t: "O Desaparecido da Su√≠te 303", d: "A su√≠te presidencial est√° aberta, as malas prontas, mas o dono do quarto evaporou." }
+    ];
+
+    let gameState = {
+        missao: null, player: "", sumiu: "", culpado: "", inv: [], local: "Hall"
     };
 
     const mapa = {
-        "Sal„o da Lareira": {
-            texto: "O fogo estala, mas n„o aquece o gelo entre vocÍs. <b>Alice</b> est· encolhida no sof·. Onde est„o os outros?",
+        "Hall": {
+            desc: "O Hall do Resort √© imenso, com tapetes persas e um cheiro suave de lavanda. A lareira crepita, mas o sil√™ncio entre os presentes √© ensurdecedor.",
             links: [
-                { t: "Interrogar Alice sobre o sumiÁo", acao: "pista", loc: "Lareira_Pista" },
-                { t: "Ir para a Adega de Vinhos", loc: "Adega" },
-                { t: "Sair para a Piscina Aquecida", loc: "Piscina" }
-            ]
-        },
-        "Adega": {
-            texto: "O cheiro de carvalho È forte. VocÍ vÍ <b>Marcos</b> mexendo em uma garrafa de forma suspeita. Uma sombra passa pela porta.",
-            links: [
-                { t: "Confrontar Marcos", acao: "pista", loc: "Adega_Pista" },
-                { t: "Verificar a Trilha da Mata ao fundo", loc: "Trilha" },
-                { t: "Voltar para a Lareira", loc: "Sal„o da Lareira" }
-            ]
-        },
-        "Piscina": {
-            texto: "A fumaÁa da ·gua aquecida cria uma nÈvoa. <b>Thais</b> e <b>Elyel</b> conversam baixo perto das espreguiÁadeiras.",
-            links: [
-                { t: "Escutar a conversa atr·s da pilastra", acao: "pista", loc: "Piscina_Pista" },
-                { t: "Ir para o Restaurante", loc: "Restaurante" },
-                { t: "Voltar para o Sal„o", loc: "Sal„o da Lareira" }
-            ]
-        },
-        "Trilha": {
-            texto: "O vento uiva entre os pinheiros de Itaipava. Est· escuro demais, mas vocÍ vÍ um celular caÌdo no ch„o.",
-            links: [
-                { t: "Analisar o celular encontrado", acao: "pista", loc: "Trilha_Pista" },
-                { t: "Correr de volta para a Adega", loc: "Adega" }
+                { t: "Conversar com os presentes no sof√°", acao: "pista", pID: "hall_p" },
+                { t: "Ir para o Restaurante de Luxo", loc: "Restaurante" },
+                { t: "Descer para a Adega Subterr√¢nea", loc: "Adega" },
+                { t: "Sair para o Jardim de Inverno", loc: "Jardim" }
             ]
         },
         "Restaurante": {
-            texto: "As mesas est„o postas, mas ninguÈm est· comendo. <b>Thiago</b> est· anotando algo em um guardanapo de papel.",
+            desc: "Mesas postas para um banquete que ningu√©m quer comer. H√° cristais quebrados no ch√£o e um clima de paranoia absoluta.",
             links: [
-                { t: "Pegar o guardanapo de Thiago", acao: "pista", loc: "Restaurante_Pista" },
-                { t: "Voltar para a Piscina", loc: "Piscina" }
+                { t: "Procurar por pistas sob as mesas", acao: "item", item: "Chave Mestra" },
+                { t: "Interrogar o gar√ßom sobre a fofoca", acao: "pista", pID: "rest_p" },
+                { t: "Voltar ao Hall", loc: "Hall" }
+            ]
+        },
+        "Adega": {
+            desc: "Um labirinto de garrafas e sombras. A temperatura caiu drasticamente aqui. A porta de carvalho parece ter sido for√ßada.",
+            links: [
+                { t: "Vasculhar os vinhos mais caros", acao: "pista", pID: "adega_p" },
+                { t: "Tentar abrir a porta secreta (Requer Chave)", loc: "Passagem" },
+                { t: "Subir para o Hall", loc: "Hall" }
+            ]
+        },
+        "Jardim": {
+            desc: "A neblina de Itaipava entrou pelo port√£o aberto. As rosas parecem negras sob o luar. H√° pegadas frescas na terra √∫mida.",
+            links: [
+                { t: "Seguir as pegadas at√© a floresta", loc: "Floresta" },
+                { t: "Procurar algo entre os arbustos", acao: "item", item: "Lanterna T√°tica" },
+                { t: "Voltar ao calor do Hall", loc: "Hall" }
+            ]
+        },
+        "Passagem": {
+            desc: "Um corredor estreito e √∫mido atr√°s da adega. Aqui voc√™ encontra as roupas de quem sumiu, jogadas de qualquer jeito.",
+            links: [
+                { t: "Analisar as roupas descartadas", acao: "pista", pID: "pass_p" },
+                { t: "Voltar √† Adega", loc: "Adega" }
+            ]
+        },
+        "Floresta": {
+            desc: "O uivo do vento nas montanhas bloqueia qualquer outro som. Sem luz, este lugar √© um t√∫mulo de pinheiros.",
+            links: [
+                { t: "Usar Lanterna para iluminar o abismo", acao: "pista", pID: "flor_p" },
+                { t: "Voltar ao Jardim", loc: "Jardim" }
             ]
         }
     };
 
-    function init() {
+    function setup() {
+        const mList = document.getElementById('mission-list');
+        missoes.forEach(m => {
+            let div = document.createElement('div');
+            div.className = 'mission-card';
+            div.innerHTML = `<h4>M¬π ${m.id}: ${m.t}</h4><small>${m.d}</small>`;
+            div.onclick = () => selectMission(m);
+            mList.appendChild(div);
+        });
+    }
+
+    function selectMission(m) {
+        gameState.missao = m;
+        document.getElementById('screen-missions').classList.add('hidden');
+        document.getElementById('screen-chars').classList.remove('hidden');
+        document.getElementById('selected-mission-title').innerText = m.t;
+        
         const grid = document.getElementById('char-grid');
+        grid.innerHTML = "";
         amigos.forEach(a => {
             let b = document.createElement('button');
             b.className = 'btn';
-            b.innerText = `Sou ${a}`;
+            b.innerText = `Investigar como ${a}`;
             b.onclick = () => start(a);
             grid.appendChild(b);
         });
     }
 
     function start(p) {
-        db.eu = p;
-        // Escolhe quem sumiu
+        gameState.player = p;
         let resto = amigos.filter(x => x !== p);
-        db.sumiu = resto[Math.floor(Math.random() * resto.length)];
-        // Escolhe o fofoqueiro (pode ser quem sumiu ou outro)
-        db.fofoqueiro = resto[Math.floor(Math.random() * resto.length)];
+        gameState.sumiu = resto[Math.floor(Math.random() * resto.length)];
+        gameState.culpado = resto[Math.floor(Math.random() * resto.length)];
         
-        document.getElementById('screen-start').classList.add('hidden');
+        document.getElementById('screen-chars').classList.add('hidden');
         document.getElementById('screen-game').classList.remove('hidden');
-        document.getElementById('p-name').innerText = `INVESTIGADOR: ${p}`;
-        
-        ir("Sal„o da Lareira");
+        renderRoom("Hall");
     }
 
-    function ir(local) {
-        if(local.includes("_Pista")) {
-            gerarPista(local);
+    function renderRoom(locKey) {
+        if(locKey === "Passagem" && !gameState.inv.includes("Chave Mestra")) {
+            alert("A porta secreta est√° trancada. Voc√™ precisa de uma Chave Mestra!");
+            return;
+        }
+        if(locKey === "Floresta" && !gameState.inv.includes("Lanterna T√°tica")) {
+            alert("Est√° escuro demais! Voc√™ se perderia na mata de Itaipava sem uma lanterna.");
             return;
         }
 
-        const cena = mapa[local];
-        document.getElementById('loc-display').innerText = local;
-        document.getElementById('scene-desc').innerHTML = cena.texto.replace("sumiu", `<b>${db.sumiu} sumiu</b>`);
+        const rm = mapa[locKey];
+        document.getElementById('scene-desc').innerHTML = `<b>${locKey.toUpperCase()}</b><br><br>${rm.desc.replace("sumiu", "<b>" + gameState.sumiu + "</b>")}`;
         
-        const cont = document.getElementById('choices-container');
-        cont.innerHTML = "";
-        cena.links.forEach(l => {
+        const ctn = document.getElementById('choices');
+        ctn.innerHTML = "";
+        rm.links.forEach(l => {
             let b = document.createElement('button');
             b.className = 'btn';
             b.innerText = `> ${l.t}`;
-            b.onclick = () => ir(l.loc);
-            cont.appendChild(b);
+            b.onclick = () => {
+                if(l.acao === "pista") getClue(l.pID);
+                else if(l.acao === "item") getItem(l.item);
+                else renderRoom(l.loc);
+            };
+            ctn.appendChild(b);
         });
     }
 
-    function gerarPista(tipo) {
-        db.pistas++;
-        document.getElementById('clue-tag').innerText = `Pistas: ${db.pistas}`;
-        let msg = "";
-        
-        if(tipo === "Lareira_Pista") msg = `Alice murmura: "Eu ouvi dizer que <b>${db.fofoqueiro}</b> estava com muita raiva do(a) ${db.sumiu} antes do jantar..."`;
-        if(tipo === "Adega_Pista") msg = `Marcos solta a garrafa: "Eu n„o fiz nada! SÛ vi o vulto de <b>${db.fofoqueiro}</b> correndo para a mata agora h· pouco."`;
-        if(tipo === "Piscina_Pista") msg = `VocÍ ouve Elyel dizendo: "O plano do(a) <b>${db.fofoqueiro}</b> deu certo, ninguÈm vai achar o(a) ${db.sumiu} t„o cedo."`;
-        if(tipo === "Trilha_Pista") msg = `O celular est· bloqueado, mas a foto de fundo È do(a) <b>${db.fofoqueiro}</b>. Tem marcas de luta aqui.`;
-        if(tipo === "Restaurante_Pista") msg = `No guardanapo de Thiago est· escrito: "Onde <b>${db.fofoqueiro}</b> escondeu o(a) ${db.sumiu}?"`;
+    function getItem(it) {
+        if(!gameState.inv.includes(it)) {
+            gameState.inv.push(it);
+            document.getElementById('inv-display').innerText = "INVENT√ÅRIO: " + gameState.inv.join(" | ");
+            alert("Voc√™ encontrou: " + it);
+        } else {
+            alert("Voc√™ j√° vasculhou este local.");
+        }
+    }
 
-        document.getElementById('scene-desc').innerHTML = `?? <b>EVID NCIA ENCONTRADA:</b><br>${msg}`;
-        const cont = document.getElementById('choices-container');
-        cont.innerHTML = `<button class="btn" onclick="ir('Sal„o da Lareira')">Continuar procurando...</button>`;
+    function getClue(id) {
+        let text = "";
+        if(id === "hall_p") text = `Algu√©m sussurra: "Eu vi <b>${gameState.culpado}</b> mexendo no celular da v√≠tima pouco antes das luzes piscarem..."`;
+        if(id === "rest_p") text = `O gar√ßom entrega um guardanapo: "O(A) <b>${gameState.culpado}</b> pediu para entregar isso para o(a) ${gameState.sumiu}, parecia uma amea√ßa."`;
+        if(id === "adega_p") text = `Nas prateleiras de vinho, voc√™ encontra um brinco. √â do(a) <b>${gameState.culpado}</b>. O que ele(a) fazia aqui sozinho(a)?`;
+        if(id === "pass_p") text = `Oculto nas roupas, h√° um print impresso. A fofoca veio do usu√°rio de <b>${gameState.culpado}</b>. Sem d√∫vidas.`;
+        if(id === "flor_p") text = `A luz da lanterna revela: pegadas de <b>${gameState.culpado}</b> levam direto ao cativeiro onde ${gameState.sumiu} est√° escondido(a)!`;
+
+        document.getElementById('scene-desc').innerHTML = `üé≠ <b>EVID√äNCIA ENCONTRADA:</b><br><br>${text}`;
+        document.getElementById('choices').innerHTML = `<button class="btn" onclick="renderRoom('Hall')">Retornar ao Centro do Resort</button>`;
     }
 
     function showAccuse() {
         document.getElementById('screen-game').classList.add('hidden');
         document.getElementById('screen-accuse').classList.remove('hidden');
-        const list = document.getElementById('accuse-list');
-        list.innerHTML = "";
+        const grid = document.getElementById('accuse-grid');
+        grid.innerHTML = "";
         amigos.forEach(a => {
-            if(a !== db.eu) {
+            if(a !== gameState.player) {
                 let b = document.createElement('button');
                 b.className = 'btn';
-                b.innerText = `Foi ${a}!`;
-                b.onclick = () => end(a === db.fofoqueiro, a);
-                list.appendChild(b);
+                b.innerText = `O CULPADO √â: ${a}`;
+                b.onclick = () => final(a === gameState.culpado, a);
+                grid.appendChild(b);
             }
         });
     }
 
-    function end(win, nome) {
+    function final(win, nome) {
         document.getElementById('screen-accuse').classList.add('hidden');
         document.getElementById('screen-game').classList.remove('hidden');
-        document.getElementById('loc-display').innerText = "O FIM DA NOITE";
-        
         if(win) {
-            document.getElementById('scene-desc').innerHTML = `?? <b>VOC  DESVENDOU!</b><br>Sob press„o, <b>${nome}</b> confessou que espalhou a fofoca e trancou ${db.sumiu} no sÛt„o do resort. VocÍ salvou o encontro em Itaipava!`;
+            document.getElementById('scene-desc').innerHTML = `‚ú® <b>CASO ENCERRADO!</b><br><br>Voc√™ confrontou <b>${nome}</b> diante de todos. Em choque, ele(a) confessou que a inveja o(a) levou a espalhar a fofoca e ocultar o(a) ${gameState.sumiu}. Itaipava agora dorme em paz.`;
         } else {
-            document.getElementById('scene-desc').innerHTML = `?? <b>TRAG…DIA...</b><br>VocÍ acusou ${nome}, mas o fofoqueiro era <b>${db.fofoqueiro}</b>. Enquanto vocÍ criava confus„o, ${db.fofoqueiro} convenceu todos de que VOC  era o culpado. VocÍ foi expulso do grupo.`;
+            document.getElementById('scene-desc').innerHTML = `ü•Ä <b>TR√ÅGICO ERRO...</b><br><br>Voc√™ apontou o dedo para ${nome}, mas <b>${gameState.culpado}</b> era o verdadeiro mestre por tr√°s das sombras. Voc√™ perdeu sua credibilidade e o culpado escapou na neblina.`;
         }
-        document.getElementById('choices-container').innerHTML = `<button class="btn" onclick="location.reload()">RecomeÁar MistÈrio</button>`;
+        document.getElementById('choices').innerHTML = `<button class="btn" onclick="location.reload()">Iniciar Nova Investiga√ß√£o</button>`;
         document.querySelector('.btn-accuse').style.display = 'none';
     }
 
@@ -208,7 +248,7 @@
         document.getElementById('screen-game').classList.remove('hidden');
     }
 
-    init();
+    setup();
 </script>
 </body>
 </html>
