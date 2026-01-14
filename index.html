@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turma do TIK TOK - Resort Itaipava</title>
+    <style>
+        :root { --accent: #c9a050; --bg: #121418; --card: #1c1f26; --text: #d1d1d1; }
+        body { font-family: 'Garamond', serif; background: var(--bg); color: var(--text); margin: 0; display: flex; justify-content: center; line-height: 1.6; }
+        #app { max-width: 600px; width: 100%; min-height: 100vh; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; background: rgba(0,0,0,0.3); box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+        .header { border-bottom: 1px solid var(--accent); text-align: center; padding-bottom: 20px; margin-bottom: 20px; }
+        .header h1 { font-size: 1.8rem; letter-spacing: 4px; color: var(--accent); margin: 0; }
+        .location-tag { font-size: 0.8rem; text-transform: uppercase; color: var(--accent); letter-spacing: 2px; margin-bottom: 5px; display: block; }
+        .scene-box { background: var(--card); border-left: 3px solid var(--accent); padding: 20px; border-radius: 4px; margin-bottom: 25px; min-height: 180px; font-size: 1.1rem; }
+        .choice-list { display: grid; gap: 12px; }
+        .btn { background: transparent; border: 1px solid #3d4450; color: var(--text); padding: 15px; text-align: left; cursor: pointer; transition: 0.4s; font-size: 0.9rem; border-radius: 2px; }
+        .btn:hover { border-color: var(--accent); background: #252a33; color: #fff; }
+        .btn-accuse { margin-top: 30px; border-color: #721c24; color: #f8d7da; background: #2c0b0e; font-weight: bold; text-align: center; }
+        .btn-accuse:hover { background: #4e1419; }
+        .footer { margin-top: auto; padding-top: 20px; border-top: 1px solid #333; font-size: 0.8rem; color: #666; display: flex; justify-content: space-between; }
+        .hidden { display: none; }
+        b { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="header">
+        <h1>TURMA DO TIK TOK</h1>
+        <small>REUNIÃO EM ITAIPAVA - RJ</small>
+    </div>
+
+    <div id="screen-start">
+        <div class="scene-box">
+            A noite caiu sobre as montanhas de Itaipava. O que era para ser um encontro relaxante no resort tornou-se um pesadelo. 
+            As taças de vinho ainda estão sobre a mesa, mas <b>alguém desapareceu</b> e uma fofoca cruel começou a circular. 
+            Você precisa ser rápido antes que a neblina cubra todos os segredos.
+        </div>
+        <p style="text-align: center;">Escolha quem você será nesta noite:</p>
+        <div id="char-grid" class="choice-list"></div>
+    </div>
+
+    <div id="screen-game" class="hidden">
+        <span class="location-tag" id="loc-display">Explorando...</span>
+        <div class="scene-box" id="scene-desc"></div>
+        <div id="choices-container" class="choice-list"></div>
+        <button class="btn btn-accuse" onclick="showAccuse()">[ ACUSAR O RESPONSÁVEL ]</button>
+        <div class="footer">
+            <span id="p-name"></span>
+            <span id="clue-tag">Pistas: 0</span>
+        </div>
+    </div>
+
+    <div id="screen-accuse" class="hidden">
+        <h2 style="color: var(--accent); text-align: center;">O VEREDITO</h2>
+        <p style="text-align: center;">Quem espalhou a fofoca e causou o sumiço?</p>
+        <div id="accuse-list" class="choice-list"></div>
+        <button class="btn" style="margin-top:20px; width: 100%; text-align: center;" onclick="backToGame()">Voltar</button>
+    </div>
+</div>
+
+<script>
+    const amigos = ["Thamiris", "Eduardo", "Marcos", "Elyel", "Julia", "Thais", "Alice", "Andre", "Bruna", "Thiago"];
+    
+    let db = {
+        eu: "",
+        sumiu: "",
+        fofoqueiro: "",
+        pistas: 0
+    };
+
+    const mapa = {
+        "Salão da Lareira": {
+            texto: "O fogo estala, mas não aquece o gelo entre vocês. <b>Alice</b> está encolhida no sofá. Onde estão os outros?",
+            links: [
+                { t: "Interrogar Alice sobre o sumiço", acao: "pista", loc: "Lareira_Pista" },
+                { t: "Ir para a Adega de Vinhos", loc: "Adega" },
+                { t: "Sair para a Piscina Aquecida", loc: "Piscina" }
+            ]
+        },
+        "Adega": {
+            texto: "O cheiro de carvalho é forte. Você vê <b>Marcos</b> mexendo em uma garrafa de forma suspeita. Uma sombra passa pela porta.",
+            links: [
+                { t: "Confrontar Marcos", acao: "pista", loc: "Adega_Pista" },
+                { t: "Verificar a Trilha da Mata ao fundo", loc: "Trilha" },
+                { t: "Voltar para a Lareira", loc: "Salão da Lareira" }
+            ]
+        },
+        "Piscina": {
+            texto: "A fumaça da água aquecida cria uma névoa. <b>Thais</b> e <b>Elyel</b> conversam baixo perto das espreguiçadeiras.",
+            links: [
+                { t: "Escutar a conversa atrás da pilastra", acao: "pista", loc: "Piscina_Pista" },
+                { t: "Ir para o Restaurante", loc: "Restaurante" },
+                { t: "Voltar para o Salão", loc: "Salão da Lareira" }
+            ]
+        },
+        "Trilha": {
+            texto: "O vento uiva entre os pinheiros de Itaipava. Está escuro demais, mas você vê um celular caído no chão.",
+            links: [
+                { t: "Analisar o celular encontrado", acao: "pista", loc: "Trilha_Pista" },
+                { t: "Correr de volta para a Adega", loc: "Adega" }
+            ]
+        },
+        "Restaurante": {
+            texto: "As mesas estão postas, mas ninguém está comendo. <b>Thiago</b> está anotando algo em um guardanapo de papel.",
+            links: [
+                { t: "Pegar o guardanapo de Thiago", acao: "pista", loc: "Restaurante_Pista" },
+                { t: "Voltar para a Piscina", loc: "Piscina" }
+            ]
+        }
+    };
+
+    function init() {
+        const grid = document.getElementById('char-grid');
+        amigos.forEach(a => {
+            let b = document.createElement('button');
+            b.className = 'btn';
+            b.innerText = `Sou ${a}`;
+            b.onclick = () => start(a);
+            grid.appendChild(b);
+        });
+    }
+
+    function start(p) {
+        db.eu = p;
+        // Escolhe quem sumiu
+        let resto = amigos.filter(x => x !== p);
+        db.sumiu = resto[Math.floor(Math.random() * resto.length)];
+        // Escolhe o fofoqueiro (pode ser quem sumiu ou outro)
+        db.fofoqueiro = resto[Math.floor(Math.random() * resto.length)];
+        
+        document.getElementById('screen-start').classList.add('hidden');
+        document.getElementById('screen-game').classList.remove('hidden');
+        document.getElementById('p-name').innerText = `INVESTIGADOR: ${p}`;
+        
+        ir("Salão da Lareira");
+    }
+
+    function ir(local) {
+        if(local.includes("_Pista")) {
+            gerarPista(local);
+            return;
+        }
+
+        const cena = mapa[local];
+        document.getElementById('loc-display').innerText = local;
+        document.getElementById('scene-desc').innerHTML = cena.texto.replace("sumiu", `<b>${db.sumiu} sumiu</b>`);
+        
+        const cont = document.getElementById('choices-container');
+        cont.innerHTML = "";
+        cena.links.forEach(l => {
+            let b = document.createElement('button');
+            b.className = 'btn';
+            b.innerText = `> ${l.t}`;
+            b.onclick = () => ir(l.loc);
+            cont.appendChild(b);
+        });
+    }
+
+    function gerarPista(tipo) {
+        db.pistas++;
+        document.getElementById('clue-tag').innerText = `Pistas: ${db.pistas}`;
+        let msg = "";
+        
+        if(tipo === "Lareira_Pista") msg = `Alice murmura: "Eu ouvi dizer que <b>${db.fofoqueiro}</b> estava com muita raiva do(a) ${db.sumiu} antes do jantar..."`;
+        if(tipo === "Adega_Pista") msg = `Marcos solta a garrafa: "Eu não fiz nada! Só vi o vulto de <b>${db.fofoqueiro}</b> correndo para a mata agora há pouco."`;
+        if(tipo === "Piscina_Pista") msg = `Você ouve Elyel dizendo: "O plano do(a) <b>${db.fofoqueiro}</b> deu certo, ninguém vai achar o(a) ${db.sumiu} tão cedo."`;
+        if(tipo === "Trilha_Pista") msg = `O celular está bloqueado, mas a foto de fundo é do(a) <b>${db.fofoqueiro}</b>. Tem marcas de luta aqui.`;
+        if(tipo === "Restaurante_Pista") msg = `No guardanapo de Thiago está escrito: "Onde <b>${db.fofoqueiro}</b> escondeu o(a) ${db.sumiu}?"`;
+
+        document.getElementById('scene-desc').innerHTML = `?? <b>EVIDÊNCIA ENCONTRADA:</b><br>${msg}`;
+        const cont = document.getElementById('choices-container');
+        cont.innerHTML = `<button class="btn" onclick="ir('Salão da Lareira')">Continuar procurando...</button>`;
+    }
+
+    function showAccuse() {
+        document.getElementById('screen-game').classList.add('hidden');
+        document.getElementById('screen-accuse').classList.remove('hidden');
+        const list = document.getElementById('accuse-list');
+        list.innerHTML = "";
+        amigos.forEach(a => {
+            if(a !== db.eu) {
+                let b = document.createElement('button');
+                b.className = 'btn';
+                b.innerText = `Foi ${a}!`;
+                b.onclick = () => end(a === db.fofoqueiro, a);
+                list.appendChild(b);
+            }
+        });
+    }
+
+    function end(win, nome) {
+        document.getElementById('screen-accuse').classList.add('hidden');
+        document.getElementById('screen-game').classList.remove('hidden');
+        document.getElementById('loc-display').innerText = "O FIM DA NOITE";
+        
+        if(win) {
+            document.getElementById('scene-desc').innerHTML = `?? <b>VOCÊ DESVENDOU!</b><br>Sob pressão, <b>${nome}</b> confessou que espalhou a fofoca e trancou ${db.sumiu} no sótão do resort. Você salvou o encontro em Itaipava!`;
+        } else {
+            document.getElementById('scene-desc').innerHTML = `?? <b>TRAGÉDIA...</b><br>Você acusou ${nome}, mas o fofoqueiro era <b>${db.fofoqueiro}</b>. Enquanto você criava confusão, ${db.fofoqueiro} convenceu todos de que VOCÊ era o culpado. Você foi expulso do grupo.`;
+        }
+        document.getElementById('choices-container').innerHTML = `<button class="btn" onclick="location.reload()">Recomeçar Mistério</button>`;
+        document.querySelector('.btn-accuse').style.display = 'none';
+    }
+
+    function backToGame() {
+        document.getElementById('screen-accuse').classList.add('hidden');
+        document.getElementById('screen-game').classList.remove('hidden');
+    }
+
+    init();
+</script>
+</body>
+</html>
